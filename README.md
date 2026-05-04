@@ -34,10 +34,3 @@ python3 generate_data/make_dataset.py --n 2000 --outdir generated_data --seed 20
 python3 main.py
 ```
 
-Pushing this project to GitHub
-
-See the instructions in the repository root for commands to create a GitHub repository and push your code. You can use either the GitHub CLI (`gh`) or standard `git` with a Personal Access Token (PAT).
-
-Contact
-
-If you want me to prepare extra repo files (LICENSE, GitHub Actions CI, CODEOWNERS) or to help craft a minimal `setup.py`/`pyproject.toml`, tell me which license and I can add them.
