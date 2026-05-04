@@ -1097,25 +1097,184 @@ def install_negative_spam_grammar(gen):
 
 
     # ------------------------------------------------------------------
-    # Top-level negative distribution
+    # Aggressive / urgent repetition
     # ------------------------------------------------------------------
+
+    URGENT_ACTIONS = [
+        "go",
+        "gas",
+        "move",
+        "push",
+        "rush",
+        "hurry",
+        "come on",
+        "lets go",
+        "go now",
+        "do it",
+        "jump",
+        "run",
+        "charge",
+    ]
+
+    URGENT_ENDINGS = [
+        "",
+        " now",
+        " bro",
+        " pls",
+        " fast",
+        " quick",
+        "!!",
+        "!!!",
+    ]
+
+    def generate_aggressive_intent(rng):
+        """
+        Negative examples with urgency/aggressive repetition.
+
+        These should NOT be treated as spam just because they are repetitive.
+        Examples:
+            go go go
+            gas gas gas
+            move move move
+            gogogogogo
+            gas gas gas now
+        """
+        action = rng.choice(URGENT_ACTIONS)
+
+        mode = rng.choice(weighted([
+            ("repeat_word", 45),
+            ("repeat_phrase", 20),
+            ("stutter", 15),
+            ("burst", 20),
+        ]))
+
+        if mode == "repeat_word":
+            n = rng.randint(2, 6)
+            text = " ".join([action] * n)
+
+        elif mode == "repeat_phrase":
+            n = rng.randint(2, 5)
+            phrase = rng.choice([
+                f"{action} now",
+                f"{action} fast",
+                f"{action} quickly",
+                f"{action} please",
+                f"{action} bro",
+            ])
+            text = " ".join([phrase] * n)
+
+        elif mode == "stutter":
+            # gogogogogo / gasgasgas
+            repeat = rng.randint(3, 8)
+            text = (action.replace(" ", "") * repeat)
+
+        else:
+            # "go go go!!!", "gas gas gas now"
+            n = rng.randint(2, 5)
+            text = " ".join([action] * n) + rng.choice(URGENT_ENDINGS)
+
+        return maybe_noisy_line(rng, text, line_p=0.06, p_word=0.04)
+
+    gen.add_rule("AGGRESSIVE_INTENT", generate_aggressive_intent)
+
+
+    # ------------------------------------------------------------------
+    # Random gibberish / keyboard smash
+    # ------------------------------------------------------------------
+
+    QWERTY_CHARS = "qwertyuiopasdfghjklzxcvbnm"
+
+    def random_gibberish_word(rng, min_len=6, max_len=16):
+        length = rng.randint(min_len, max_len)
+
+        # Mix of keyboard-smash and random consonant-heavy strings
+        mode = rng.choice(weighted([
+            ("keyboard", 45),
+            ("random", 35),
+            ("repeat", 20),
+        ]))
+
+        if mode == "keyboard":
+            start = rng.randint(0, len(QWERTY_CHARS) - 1)
+            step = rng.choice([-2, -1, 1, 2, 3])
+            out = []
+            idx = start
+            for _ in range(length):
+                out.append(QWERTY_CHARS[idx % len(QWERTY_CHARS)])
+                idx += step
+            return "".join(out)
+
+        elif mode == "repeat":
+            ch = rng.choice(QWERTY_CHARS)
+            return ch * length
+
+        else:
+            letters = "abcdefghijklmnopqrstuvwxyz"
+            out = []
+            for i in range(length):
+                if i % 3 == 0:
+                    out.append(rng.choice(letters))
+                else:
+                    out.append(rng.choice(letters + "sjdkfghqwermn"))
+            return "".join(out)
+
+    def generate_random_gibberish(rng):
+        """
+        Negative examples for nonsense / keyboard smash.
+
+        Important:
+        These should not be considered spam just because they are random-looking.
+        Examples:
+            dsgoijadsgjasg
+            xjskdksjd
+            qweqweqwe
+            asdfghjkl
+        """
+        n_words = rng.choice(weighted([
+            (1, 70),
+            (2, 20),
+            (3, 10),
+        ]))
+
+        words = []
+        for _ in range(n_words):
+            w = random_gibberish_word(rng)
+
+            # small chance to make it look like a human typo burst
+            if rng.random() < 0.15:
+                w = random_case(rng, w)
+
+            if rng.random() < 0.08:
+                w = insert_noise_between_chars(rng, w)
+
+            words.append(w)
+
+        text = " ".join(words)
+
+        # occasionally add punctuation so it resembles actual chat noise
+        if rng.random() < 0.25:
+            text += rng.choice(["", "!", "!!", "?", "???", " lol", " idk", " omg"])
+
+        return maybe_noisy_line(rng, text, line_p=0.03, p_word=0.03)
+
+    gen.add_rule("RANDOM_GIBBERISH", generate_random_gibberish)
+
 
     gen.add_rule("NONSPAM_MESSAGE", weighted([
         # Broad general negative chat
-        ("{MSG}{FAKE_CHAT}{TAIL}", 16),
-        ("{ME}{HELP_SOCIAL}{TAIL}", 16),
+        ("{MSG}{FAKE_CHAT}{TAIL}", 15),
+        ("{ME}{HELP_SOCIAL}{TAIL}", 15),
 
-        # Very important:
         # casino/csn mentioned, but not promotional
         ("{ME}{CASINO_DISCUSSION_NEGATIVE}{TAIL}", 8),
         ("{MSG}{CASINO_DISCUSSION_NEGATIVE}{TAIL}", 2),
 
         # One world invite should usually be negative.
-        ("{ME}{WORLD_INVITE}{TAIL}", 21),
+        ("{ME}{WORLD_INVITE}{TAIL}", 18),
         ("{MSG}{WORLD_INVITE}{TAIL}", 5),
 
         # Trade/shop with WL/DL/BGL but not casino.
-        ("{ME}{TRADE_MESSAGE}{TAIL}", 17),
+        ("{ME}{TRADE_MESSAGE}{TAIL}", 15),
         ("{MSG}{TRADE_MESSAGE}{TAIL}", 5),
 
         # Owner/world/admin info.
@@ -1123,11 +1282,18 @@ def install_negative_spam_grammar(gen):
         ("{MSG}{OWNER_INFO}{TAIL}", 4),
 
         # Hard negatives with BASE_BIDS-looking tokens.
-        ("{ME}{BASEBID_HARD_NEGATIVE}{TAIL}", 14),
+        ("{ME}{BASEBID_HARD_NEGATIVE}{TAIL}", 12),
         ("{MSG}{BASEBID_HARD_NEGATIVE}{TAIL}", 4),
+
+        # New: aggressive urgency / repeated commands
+        ("{ME}{AGGRESSIVE_INTENT}{TAIL}", 6),
+        ("{MSG}{AGGRESSIVE_INTENT}{TAIL}", 2),
+
+        # New: random gibberish / keyboard smash
+        ("{ME}{RANDOM_GIBBERISH}{TAIL}", 3),
+        ("{MSG}{RANDOM_GIBBERISH}{TAIL}", 1),
 
         # Rare obfuscated/noisy normal messages.
         ("{ME}{NOISY_NORMAL}{TAIL}", 4),
         ("{MSG}{NOISY_NORMAL}{TAIL}", 2),
     ]))
-
