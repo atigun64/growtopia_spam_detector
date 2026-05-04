@@ -5,7 +5,7 @@ from helper import insert_noise_between_chars, insert_one_noise_char, split_with
 
 BASE_BIDS = [
     "BJ", "RM", "QQ", "CSN", "REME", "CASINO",
-    "MIN", "GAS", "DL", "WLS", "BEJE", "TURK"
+    "MIN", "GAS", "DL", "WL", "BEJE", "TURK", "BGL",
 ]
 
 def mutate_bid(rng, base, t=1.0):

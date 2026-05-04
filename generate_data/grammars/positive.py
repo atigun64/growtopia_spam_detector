@@ -2,7 +2,6 @@ from bid_name_generator import random_bid_combo, random_single_bid
 from helper import weighted, obfuscate_word, insert_noise_between_chars, random_case
 from world_name_generator import random_world_name
 
-
 def random_user_name(rng):
     len = rng.choice(weighted([
         (4, 6),
@@ -21,6 +20,7 @@ def random_user_name(rng):
         (17, 1),
     ]))
     return random_case(rng, "".join(rng.choice("abcdefghijklmnopqrstuvwxyz") + rng.choice("abcdefghijklmnopqrstuvwxyz0123456789") for _ in range(len)))
+
 
 def install_positive_spam_grammar(gen):
     # Keep core tokens

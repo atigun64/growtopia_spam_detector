@@ -19,7 +19,7 @@ import sys
 sys.path.insert(0, os.path.abspath('.'))
 from generator import GrammarGenerator
 from grammars.positive import install_positive_spam_grammar
-from grammars.negative import install_negative_spam_grammar_with_chat
+from grammars.negative import install_negative_spam_grammar
 
 try:
     from sklearn.model_selection import train_test_split
@@ -34,7 +34,7 @@ def generate_samples(n_pos, n_neg, seed=42):
     install_positive_spam_grammar(G_pos)
 
     G_neg = GrammarGenerator(seed=seed+1)
-    install_negative_spam_grammar_with_chat(G_neg)
+    install_negative_spam_grammar(G_neg)
 
     pos = [G_pos.generate('{SPAM_MESSAGE}')[0] for _ in range(n_pos)]
     neg = [G_neg.generate('{NONSPAM_MESSAGE}')[0] for _ in range(n_neg)]
@@ -60,7 +60,7 @@ def write_csv(rows, path):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument('--n', type=int, default=2000, help='total examples (split equally pos/neg)')
+    p.add_argument('--n', type=int, default=30000, help='total examples (split equally pos/neg)')
     p.add_argument('--outdir', type=str, default='data', help='output directory')
     p.add_argument('--seed', type=int, default=42)
     p.add_argument('--test-size', type=float, default=0.1)

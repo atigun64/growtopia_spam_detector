@@ -8,7 +8,7 @@ def main():
     install_negative_spam_grammar(gen)
     # Generate some spam messages
     for _ in range(100):
-        print(gen.generate("{SPAM_MESSAGE}"))
+        print(gen.generate("{NONSPAM_MESSAGE}"))
 
 
 if __name__ == "__main__":
