@@ -97,16 +97,6 @@ print(f"Spam probability: {prob:.4f}")
 print(f"Label: {'SPAM' if prob >= 0.5 else 'BENIGN'}")
 ```
 
-### Option 3: Demo with Normalization
-
-See how text is normalized and classified:
-
-```bash
-python3 main.py
-```
-
-This script demonstrates:
-
 ## Demo: Spam Detection Examples
 
 ### Spam Messages (Caught)
@@ -189,17 +179,11 @@ The generator uses two modular grammar systems:
 
 ## How It Works
 
-1. **Text Normalization** (`normalization.py`):
-   - Removes Growtopia color tags (`` `0 ``, `` `a ``, etc.)
-   - Replaces bracket variants (`[`, `]`, `{`, `}`) with `(`/`)`
-   - Removes special characters and equals signs (used in ads)
-   - Collapses whitespace
-
-2. **Feature Extraction** (via sklearn):
+1. **Feature Extraction** (via sklearn):
    - TF-IDF vectorization of normalized text
    - Captures token frequency patterns
 
-3. **Classification** (trained model):
+2. **Classification** (trained model):
    - Binary classifier: Spam (1) vs. Benign (0)
    - Outputs probability [0, 1]
    - Threshold: 0.5 (≥0.5 = spam)
@@ -215,26 +199,3 @@ The generator uses two modular grammar systems:
 | `generate_data/make_dataset.py` | Generate synthetic training/test data |
 | `generate_data/grammars/positive.py` | Casino spam message patterns |
 | `generate_data/grammars/negative/` | Benign chat patterns (modular structure) |
-
-## Performance Notes
-
-- **Spam detection**: High precision/recall on casino tokens and obfuscated variants
-- **False positives**: Minimized through hard negatives (legitimate uses of words like "min", "gas", "csn" in non-promotional contexts)
-- **Robustness**: Handles obfuscation (leet-speak), separators, spacing, and mixed casing
-- **Normalization**: Critical for catching obfuscated forms like `C$N`, `C4S1N0`
-
-## Next Steps
-
-1. Train or fine-tune the model with your data:
-   ```bash
-   python3 generate_data/make_dataset.py --n 10000
-   # Then train with your ML framework (sklearn, etc.)
-   ```
-
-2. Deploy the web interface:
-   ```bash
-   python3 app.py
-   ```
-
-3. Inspect data generation to adjust spam/benign patterns as needed
-
