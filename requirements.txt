@@ -2,3 +2,4 @@ pyphen
 scikit-learn
 pandas
 faker
+gradio
