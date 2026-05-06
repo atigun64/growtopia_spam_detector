@@ -194,7 +194,6 @@ The generator uses two modular grammar systems:
 |------|---------|
 | `app.py` | Gradio web interface for real-time detection |
 | `main.py` | Demo script; edit to test normalization |
-| `normalization.py` | Text cleaning and standardization |
 | `spam_model.joblib` | Trained ML model (binary classifier) |
 | `generate_data/make_dataset.py` | Generate synthetic training/test data |
 | `generate_data/grammars/positive.py` | Casino spam message patterns |
