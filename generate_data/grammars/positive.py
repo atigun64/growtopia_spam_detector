@@ -1,9 +1,9 @@
-from word_generation.bid_name_generator import random_bid_combo, random_single_bid
+from generators.bid_name_generator import random_bid_combo, random_single_bid
 from helper import weighted
-from word_generation.world_name_generator import random_world_name
+from generators.name_generator import random_name_generator
 from text_mutator import TextMutator
 
-from word_generation.user_name_generator import random_user_name
+from generators.user_name_generator import random_user_name
 
 def install_positive_spam_grammar(gen):
     """
@@ -33,65 +33,7 @@ def install_positive_spam_grammar(gen):
     # World-like generators
     # ------------------------------------------------------------------
 
-    def world_name_like(rng):
-        """
-        Generate world identifiers that are not always the clean default world format.
-        Important for cases like:
-            TEROYAM213
-            WORLAF2
-            WORLD52
-        """
-        mode = rng.choice(weighted([
-            ("gt", 45),
-            ("world_num", 22),
-            ("compact", 18),
-            ("mixed", 10),
-            ("capsy", 5),
-        ]))
-
-        if mode == "gt":
-            w = random_world_name(rng)
-
-        elif mode == "world_num":
-            w = "WORLD" + str(rng.randint(1, 99999))
-
-        elif mode == "compact":
-            letters = "abcdefghijklmnopqrstuvwxyz"
-            digits = "0123456789"
-            size = rng.randint(6, 10)
-            w = ""
-            for i in range(size):
-                if i % 2 == 0:
-                    w += rng.choice(letters)
-                else:
-                    w += rng.choice(letters + digits)
-            if rng.random() < 0.5:
-                w = TextMutator.random_case(rng, w)
-
-        elif mode == "capsy":
-            # looks like a user/world hybrid
-            letters = "abcdefghijklmnopqrstuvwxyz"
-            digits = "0123456789"
-            size = rng.randint(5, 12)
-            parts = []
-            for i in range(size):
-                ch = rng.choice(letters + digits)
-                if i == 0 or rng.random() < 0.35:
-                    ch = ch.upper()
-                parts.append(ch)
-            w = "".join(parts)
-
-        else:
-            # mixed weird identifier
-            letters = "abcdefghijklmnopqrstuvwxyz0123456789"
-            size = rng.randint(6, 14)
-            w = "".join(rng.choice(letters) for _ in range(size))
-            if rng.random() < 0.4:
-                w = TextMutator.random_case(rng, w)
-
-        return w
-
-    gen.add_rule("WORLD_NAME", world_name_like)
+    gen.add_rule("WORLD_NAME", random_name_generator)
 
     # ------------------------------------------------------------------
     # Styling helpers
@@ -144,7 +86,7 @@ def install_positive_spam_grammar(gen):
         return b
 
     def style_world(rng):
-        w = rng.choice([random_world_name(rng), world_name_like(rng)])
+        w = rng.choice([random_name_generator(rng), world_name_like(rng)])
         if rng.random() < 0.18:
             w = TextMutator.random_case(rng, w)
         if rng.random() < 0.06:

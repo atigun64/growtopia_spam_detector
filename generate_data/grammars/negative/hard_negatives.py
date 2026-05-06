@@ -1,6 +1,6 @@
 from text_mutator import TextMutator
 from .base import safe_world_name, safe_user_name, fake_item_name, random_price
-from word_generation.extra_words import random_currency_bid, random_normal_meaning_bid, random_strong_casino_bid, random_base_bid_token
+from generators.extra_words import random_currency_bid, random_normal_meaning_bid, random_strong_casino_bid, random_base_bid_token
 from helper import weighted
 
 def generate_basebid_hard_negative(rng):

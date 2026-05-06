@@ -1,9 +1,9 @@
 from helper import weighted
-from generate_data.word_generation.world_name_generator import random_world_name
+from generate_data.generators.name_generator import random_name_generator
 from faker import Faker
 import re
 from text_mutator import TextMutator
-from generate_data.word_generation.user_name_generator import random_user_name
+from generate_data.generators.user_name_generator import random_user_name
 
 fake = Faker("en_US")
 
@@ -58,7 +58,7 @@ def clean_text(text, max_len=140):
 
 def safe_world_name(rng):
     for _ in range(30):
-        w = random_world_name(rng)
+        w = random_name_generator(rng)
         if not contains_strong_casino_term(w):
             return w
     return "WORLD" + str(rng.randint(1000, 999999))

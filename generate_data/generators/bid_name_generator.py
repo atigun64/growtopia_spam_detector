@@ -3,8 +3,8 @@ import re
 
 from text_mutator import TextMutator
 from helper import weighted
-from generate_data.word_generation.user_name_generator import random_user_name
-from generate_data.word_generation.world_name_generator import random_world_name
+from generate_data.generators.user_name_generator import random_user_name
+from generate_data.generators.name_generator import random_name_generator
 
 BASE_BIDS = [
     "BJ", "RM", "QQ", "CSN", "REME", "CASINO",

@@ -1,3 +1,5 @@
+import re
+
 class TextMutator:
     """
     Comprehensive text mutation library consolidating all mutations from positive and negative grammar files.
