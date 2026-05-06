@@ -1,33 +1,9 @@
-from bid_name_generator import random_bid_combo, random_single_bid
-from helper import weighted, obfuscate_word, insert_noise_between_chars, random_case
-from world_name_generator import random_world_name
+from word_generation.bid_name_generator import random_bid_combo, random_single_bid
+from helper import weighted
+from word_generation.world_name_generator import random_world_name
+from text_mutator import TextMutator
 
-def random_user_name(rng):
-    name_len = rng.choice(weighted([
-        (4, 6),
-        (5, 7),
-        (6, 10),
-        (7, 15),
-        (8, 20),
-        (9, 20),
-        (10, 20),
-        (11, 15),
-        (12, 15),
-        (13, 15),
-        (14, 10),
-        (15, 5),
-        (16, 2),
-        (17, 1),
-    ]))
-    return random_case(
-        rng,
-        "".join(
-            rng.choice("abcdefghijklmnopqrstuvwxyz") +
-            rng.choice("abcdefghijklmnopqrstuvwxyz0123456789")
-            for _ in range(name_len)
-        )
-    )
-
+from word_generation.user_name_generator import random_user_name
 
 def install_positive_spam_grammar(gen):
     """
@@ -90,7 +66,7 @@ def install_positive_spam_grammar(gen):
                 else:
                     w += rng.choice(letters + digits)
             if rng.random() < 0.5:
-                w = random_case(rng, w)
+                w = TextMutator.random_case(rng, w)
 
         elif mode == "capsy":
             # looks like a user/world hybrid
@@ -111,7 +87,7 @@ def install_positive_spam_grammar(gen):
             size = rng.randint(6, 14)
             w = "".join(rng.choice(letters) for _ in range(size))
             if rng.random() < 0.4:
-                w = random_case(rng, w)
+                w = TextMutator.random_case(rng, w)
 
         return w
 
@@ -125,13 +101,13 @@ def install_positive_spam_grammar(gen):
         out = str(token)
 
         if rng.random() < case_p:
-            out = random_case(rng, out)
+            out = TextMutator.random_case(rng, out)
 
         if rng.random() < obf_p:
-            out = obfuscate_word(rng, out, p=0.14)
+            out = TextMutator.obfuscate_word(rng, out, p=0.14)
 
         if rng.random() < noise_p:
-            out = insert_noise_between_chars(rng, out)
+            out = TextMutator.insert_noise_between_chars(rng, out)
 
         return out
 
@@ -151,11 +127,11 @@ def install_positive_spam_grammar(gen):
         ]))
 
         if mode == "case":
-            b = random_case(rng, b)
+            b = TextMutator.random_case(rng, b)
         elif mode == "obf":
-            b = obfuscate_word(rng, b, p=0.18)
+            b = TextMutator.obfuscate_word(rng, b, p=0.18)
         elif mode == "noise":
-            b = insert_noise_between_chars(rng, b)
+            b = TextMutator.insert_noise_between_chars(rng, b)
         elif mode == "comboish":
             b = style_token(rng, b, obf_p=0.12, noise_p=0.04, case_p=0.35)
 
@@ -170,9 +146,9 @@ def install_positive_spam_grammar(gen):
     def style_world(rng):
         w = rng.choice([random_world_name(rng), world_name_like(rng)])
         if rng.random() < 0.18:
-            w = random_case(rng, w)
+            w = TextMutator.random_case(rng, w)
         if rng.random() < 0.06:
-            w = obfuscate_word(rng, w, p=0.10)
+            w = TextMutator.obfuscate_word(rng, w, p=0.10)
         return w
 
     gen.add_rule("BID_LIGHT", style_bid_light)
@@ -302,11 +278,11 @@ def install_positive_spam_grammar(gen):
     def generate_caller(rng):
         c = rng.choice(CTA_WORDS)
         if rng.random() < 0.12:
-            c = obfuscate_word(rng, c, p=0.12)
+            c = TextMutator.obfuscate_word(rng, c, p=0.12)
         if rng.random() < 0.08:
-            c = insert_noise_between_chars(rng, c)
+            c = TextMutator.insert_noise_between_chars(rng, c)
         if rng.random() < 0.22:
-            c = random_case(rng, c)
+            c = TextMutator.random_case(rng, c)
         return c
 
     def generate_ad_word(rng):

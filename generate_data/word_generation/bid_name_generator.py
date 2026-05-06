@@ -1,7 +1,10 @@
 import random
 import re
 
-from helper import insert_noise_between_chars, insert_one_noise_char, split_with_separators, obfuscate_word, space_out, add_suffix, random_case
+from text_mutator import TextMutator
+from helper import weighted
+from generate_data.word_generation.user_name_generator import random_user_name
+from generate_data.word_generation.world_name_generator import random_world_name
 
 BASE_BIDS = [
     "BJ", "RM", "QQ", "CSN", "REME", "CASINO",
@@ -22,25 +25,25 @@ def mutate_bid(rng, base, t=1.0):
         token = token
     elif roll <= 65*t:
         # dotted/slashed/spaced form
-        token = split_with_separators(rng, token)
+        token = TextMutator.split_with_separators(rng, token)
     elif roll <= 80*t:
         # one inserted noise char
-        token = insert_one_noise_char(rng, token)
+        token = TextMutator.insert_one_noise_char(rng, token)
     elif roll <= 92*t:
         # leetspeak
-        token = obfuscate_word(rng, token, p=0.45*t)
+        token = TextMutator.obfuscate_word(rng, token, p=0.45*t)
     else:
         # spaced out
-        token = space_out(rng, token)
+        token = TextMutator.space_out(rng, token)
 
     # maybe apply a second *small* mutation
     if rng.random() < 0.25*t:
-        token = obfuscate_word(rng, token, p=0.15*t)
+        token = TextMutator.obfuscate_word(rng, token, p=0.15*t)
 
     if rng.random() < 0.20*t:
-        token = add_suffix(rng, token)
+        token = TextMutator.add_suffix(rng, token)
 
-    token = random_case(rng, token)
+    token = TextMutator.random_case(rng, token)
     return token
 
 

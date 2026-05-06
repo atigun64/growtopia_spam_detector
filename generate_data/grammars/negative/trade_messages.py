@@ -1,4 +1,5 @@
 from .base import safe_world_name, maybe_noisy_line, fake_item_name, random_price
+from text_mutator import TextMutator
 
 TRADE_VERBS = [
     "buy",
@@ -65,7 +66,7 @@ def generate_trade_message(rng):
         sep=rng.choice(["=", ":", " = ", " : ", " - "]),
     )
 
-    return maybe_noisy_line(rng, text, line_p=0.075, p_word=0.075)
+    return TextMutator.maybe_noisy_line(rng, text, line_p=0.075, p_word=0.075)
 
 def install_trade_messages(gen):
     gen.add_rule("TRADE_MESSAGE", generate_trade_message)

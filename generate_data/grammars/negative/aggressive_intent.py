@@ -1,4 +1,5 @@
 from .base import weighted, maybe_noisy_line
+from text_mutator import TextMutator
 
 URGENT_ACTIONS = [
     "go",
@@ -73,7 +74,7 @@ def generate_aggressive_intent(rng):
         n = rng.randint(2, 5)
         text = " ".join([action] * n) + rng.choice(URGENT_ENDINGS)
 
-    return maybe_noisy_line(rng, text, line_p=0.06, p_word=0.04)
+    return TextMutator.maybe_noisy_line(rng, text, line_p=0.06, p_word=0.04)
 
 def install_aggressive_intent(gen):
     gen.add_rule("AGGRESSIVE_INTENT", generate_aggressive_intent)

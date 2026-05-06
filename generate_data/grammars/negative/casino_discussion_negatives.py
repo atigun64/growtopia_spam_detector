@@ -1,4 +1,5 @@
-from .base import weighted, obfuscate_word, insert_noise_between_chars, random_case, safe_user_name, safe_world_name, fake_words_safe, maybe_noisy_line
+from .base import weighted, safe_user_name, safe_world_name, fake_words_safe, maybe_noisy_line
+from text_mutator import TextMutator
 
 def casino_word_variant(rng):
     """
@@ -19,13 +20,13 @@ def casino_word_variant(rng):
     ]))
 
     if rng.random() < 0.10:
-        word = obfuscate_word(rng, word, p=0.12)
+        word = TextMutator.obfuscate_word(rng, word, p=0.12)
 
     if rng.random() < 0.06:
-        word = insert_noise_between_chars(rng, word)
+        word = TextMutator.insert_noise_between_chars(rng, word)
 
     if rng.random() < 0.18:
-        word = random_case(rng, word)
+        word = TextMutator.random_case(rng, word)
 
     return word
 
@@ -119,7 +120,7 @@ def generate_casino_discussion_negative(rng):
 
     # Discussion negatives can have mild normal-user weirdness.
     # Keep it rare/moderate.
-    return maybe_noisy_line(rng, text, line_p=0.10, p_word=0.08)
+    return TextMutator.maybe_noisy_line(rng, text, line_p=0.10, p_word=0.08)
 
 def install_casino_discussion_negatives(gen):
     gen.add_rule("CASINO_DISCUSSION_NEGATIVE", generate_casino_discussion_negative)

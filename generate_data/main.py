@@ -1,4 +1,4 @@
-from generator import GrammarGenerator
+from generate_data.grammar import GrammarGenerator
 from grammars.positive import install_positive_spam_grammar
 from grammars.negative import install_negative_spam_grammar
 

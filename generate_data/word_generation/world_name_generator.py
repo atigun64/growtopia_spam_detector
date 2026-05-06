@@ -1,8 +1,9 @@
-from helper import random_case, obfuscate_word
 import random
 import os
 import re
 import string
+from text_mutator import TextMutator
+from helper import weighted
 
 try:
     from faker import Faker
@@ -495,7 +496,7 @@ def random_world_name(rng):
     elif style <= 75:
         return name.lower()
     else:
-        return random_case(rng, name)
+        return TextMutator.random_case(rng, name)
 
 
 def completely_random_world_name(rng):

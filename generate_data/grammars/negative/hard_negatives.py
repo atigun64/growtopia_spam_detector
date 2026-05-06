@@ -1,4 +1,7 @@
-from .base import safe_world_name, safe_user_name, random_price, fake_item_name, weighted, style_bid_token, random_currency_bid, random_normal_meaning_bid, random_strong_casino_bid, random_base_bid_token, maybe_noisy_line
+from text_mutator import TextMutator
+from .base import safe_world_name, safe_user_name, fake_item_name, random_price
+from word_generation.extra_words import random_currency_bid, random_normal_meaning_bid, random_strong_casino_bid, random_base_bid_token
+from helper import weighted
 
 def generate_basebid_hard_negative(rng):
     """
@@ -28,7 +31,7 @@ def generate_basebid_hard_negative(rng):
     ]))
 
     if mode == "currency":
-        bid = style_bid_token(rng, random_currency_bid(rng))
+        bid = TextMutator.style_bid_token(rng, random_currency_bid(rng))
 
         patterns = [
             "{bid} shop{sep}{world}",
@@ -56,7 +59,7 @@ def generate_basebid_hard_negative(rng):
 
     elif mode == "normal_meaning":
         raw_bid = random_normal_meaning_bid(rng)
-        bid = style_bid_token(rng, raw_bid)
+        bid = TextMutator.style_bid_token(rng, raw_bid)
 
         if raw_bid == "RM":
             patterns = [
@@ -115,7 +118,7 @@ def generate_basebid_hard_negative(rng):
 
     elif mode == "casino_discussion":
         raw_bid = random_strong_casino_bid(rng)
-        bid = style_bid_token(rng, raw_bid, obf_p=0.10, noise_p=0.05, case_p=0.30)
+        bid = TextMutator.style_bid_token(rng, raw_bid, obf_p=0.10, noise_p=0.05, case_p=0.30)
 
         patterns = [
             "i hate {bid}",
@@ -146,7 +149,7 @@ def generate_basebid_hard_negative(rng):
 
     else:  # token_meta
         raw_bid = random_base_bid_token(rng)
-        bid = style_bid_token(rng, raw_bid, obf_p=0.12, noise_p=0.06, case_p=0.35)
+        bid = TextMutator.style_bid_token(rng, raw_bid, obf_p=0.12, noise_p=0.06, case_p=0.35)
 
         patterns = [
             "what means {bid}",
@@ -166,7 +169,7 @@ def generate_basebid_hard_negative(rng):
             world=world,
         )
 
-    return maybe_noisy_line(rng, text, line_p=0.14, p_word=0.12)
+    return TextMutator.maybe_noisy_line(rng, text, line_p=0.14, p_word=0.12)
 
 def install_hard_negatives(gen):
     gen.add_rule("BASEBID_HARD_NEGATIVE", generate_basebid_hard_negative)

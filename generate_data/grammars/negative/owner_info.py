@@ -1,4 +1,5 @@
 from .base import safe_user_name, safe_world_name, maybe_noisy_line
+from text_mutator import TextMutator
 
 OWNER_ROLES = [
     "owner",
@@ -44,7 +45,7 @@ def generate_owner_info(rng):
         sep=rng.choice([" ", "=", ":", " = ", " : "]),
     )
 
-    return maybe_noisy_line(rng, text, line_p=0.09, p_word=0.09)
+    return TextMutator.maybe_noisy_line(rng, text, line_p=0.09, p_word=0.09)
 
 def install_owner_info(gen):
     gen.add_rule("OWNER_INFO", generate_owner_info)

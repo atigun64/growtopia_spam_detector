@@ -1,4 +1,5 @@
-from .base import weighted, random_case, insert_noise_between_chars, maybe_noisy_line
+from .base import weighted, maybe_noisy_line
+from text_mutator import TextMutator
 
 QWERTY_CHARS = "qwertyuiopasdfghjklzxcvbnm"
 
@@ -60,10 +61,10 @@ def generate_random_gibberish(rng):
 
         # small chance to make it look like a human typo burst
         if rng.random() < 0.15:
-            w = random_case(rng, w)
+            w = TextMutator.random_case(rng, w)
 
         if rng.random() < 0.08:
-            w = insert_noise_between_chars(rng, w)
+            w = TextMutator.insert_noise_between_chars(rng, w)
 
         words.append(w)
 
@@ -73,7 +74,7 @@ def generate_random_gibberish(rng):
     if rng.random() < 0.25:
         text += rng.choice(["", "!", "!!", "?", "???", " lol", " idk", " omg"])
 
-    return maybe_noisy_line(rng, text, line_p=0.03, p_word=0.03)
+    return TextMutator.maybe_noisy_line(rng, text, line_p=0.03, p_word=0.03)
 
 def install_random_gibberish(gen):
     gen.add_rule("RANDOM_GIBBERISH", generate_random_gibberish)

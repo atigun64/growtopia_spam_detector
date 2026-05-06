@@ -1,29 +1,11 @@
-from helper import weighted, obfuscate_word, insert_noise_between_chars, random_case
-from world_name_generator import random_world_name
+from helper import weighted
+from generate_data.word_generation.world_name_generator import random_world_name
 from faker import Faker
 import re
+from text_mutator import TextMutator
+from generate_data.word_generation.user_name_generator import random_user_name
 
 fake = Faker("en_US")
-
-def random_user_name(rng):
-    len = rng.choice(weighted([
-        (4, 6),
-        (5, 7),
-        (6, 10),
-        (7, 15),
-        (8, 20),
-        (9, 20),
-        (10, 20),
-        (11, 15),
-        (12, 15),
-        (13, 15),
-        (14, 10),
-        (15, 5),
-        (16, 2),
-        (17, 1),
-    ]))
-    return random_case(rng, "".join(rng.choice("abcdefghijklmnopqrstuvwxyz") + rng.choice("abcdefghijklmnopqrstuvwxyz0123456789") for _ in range(len)))
-
 
 # ------------------------------------------------------------------
 # Important:
@@ -62,62 +44,17 @@ LEET_TABLE = str.maketrans({
     "$": "s",
 })
 
-BASE_BIDS = [
-    "BJ", "RM", "QQ", "CSN", "REME", "CASINO",
-    "MIN", "GAS", "DL", "WL", "BEJE", "TURK", "BGL",
-]
-
-# Tokens split by how they can safely appear in negative examples.
-CURRENCY_BIDS = ["DL", "WL", "BGL"]
-NORMAL_MEANING_BIDS = ["RM", "MIN", "GAS", "TURK", "QQ"]
-STRONG_CASINO_BIDS = ["CSN", "CASINO", "BJ", "REME", "BEJE"]
-
-def style_bid_token(rng, token, obf_p=0.08, noise_p=0.04, case_p=0.25):
-    """
-    Style a BASE_BIDS token in negative examples.
-
-    Low/moderate noise so model learns:
-        token/noise alone != casino ad.
-    """
-    out = token
-
-    if rng.random() < case_p:
-        out = random_case(rng, out)
-
-    if rng.random() < obf_p:
-        out = obfuscate_word(rng, out, p=0.12)
-
-    if rng.random() < noise_p:
-        out = insert_noise_between_chars(rng, out)
-
-    return out
-
-def random_base_bid_token(rng):
-    return rng.choice(BASE_BIDS)
-
-def random_currency_bid(rng):
-    return rng.choice(CURRENCY_BIDS)
-
-def random_normal_meaning_bid(rng):
-    return rng.choice(NORMAL_MEANING_BIDS)
-
-def random_strong_casino_bid(rng):
-    return rng.choice(STRONG_CASINO_BIDS)
-
 def normalize_for_filter(text):
-    low = str(text).lower().translate(LEET_TABLE)
-    compact = re.sub(r"[^a-z0-9]+", "", low)
-    return compact
+    """Delegate to TextMutator for consistent normalization."""
+    return TextMutator.normalize_for_filter(text)
 
 def contains_strong_casino_term(text):
     compact = normalize_for_filter(text)
     return any(term in compact for term in STRONG_CASINO_CONTAMINATION_TERMS)
 
 def clean_text(text, max_len=140):
-    text = str(text)
-    text = text.replace("\n", " ").replace("\r", " ")
-    text = re.sub(r"\s+", " ", text).strip()
-    return text[:max_len].strip()
+    """Delegate to TextMutator for consistent text cleaning."""
+    return TextMutator.clean_text(text, max_len=max_len)
 
 def safe_world_name(rng):
     for _ in range(30):
@@ -134,46 +71,16 @@ def safe_user_name(rng):
     return "player" + str(rng.randint(1000, 999999))
 
 def maybe_style_word(rng, word, obf_p=0.025, noise_p=0.018, case_p=0.12):
-    """
-    Rare styling for normal messages.
-
-    Keep low. The point is to teach:
-        obfuscation can exist in negative messages too.
-    Not:
-        obfuscation means negative/positive by itself.
-    """
-    out = str(word)
-
-    if rng.random() < case_p:
-        out = random_case(rng, out)
-
-    if rng.random() < obf_p:
-        out = obfuscate_word(rng, out, p=0.10)
-
-    if rng.random() < noise_p:
-        out = insert_noise_between_chars(rng, out)
-
-    return out
+    """Delegate to TextMutator for consistent styling."""
+    return TextMutator.maybe_style_word(rng, word, obf_p=obf_p, noise_p=noise_p, case_p=case_p)
 
 def maybe_style_phrase(rng, text, p_word=0.06):
-    parts = str(text).split(" ")
-    out = []
-
-    for part in parts:
-        if rng.random() < p_word:
-            out.append(maybe_style_word(rng, part))
-        else:
-            out.append(part)
-
-    return " ".join(out)
+    """Delegate to TextMutator for consistent phrase styling."""
+    return TextMutator.maybe_style_phrase(rng, text, p_word=p_word)
 
 def maybe_noisy_line(rng, text, line_p=0.075, p_word=0.08):
-    """
-    Around 7.5% of negative lines get some normal-user weirdness.
-    """
-    if rng.random() < line_p:
-        text = maybe_style_phrase(rng, text, p_word=p_word)
-    return clean_text(text)
+    """Delegate to TextMutator for consistent line styling."""
+    return TextMutator.maybe_noisy_line(rng, text, line_p=line_p, p_word=p_word)
 
 def reseed_fake(rng):
     fake.seed_instance(rng.randint(1, 2**32 - 1))

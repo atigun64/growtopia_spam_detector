@@ -1,4 +1,5 @@
-from .base import weighted, reseed_fake, safe_world_name, clean_text, maybe_noisy_line, fake
+from .base import weighted, reseed_fake, safe_world_name, fake
+from text_mutator import TextMutator
 
 def generate_gameplay_negative(rng):
     """
@@ -33,7 +34,7 @@ def generate_gameplay_negative(rng):
     ]))
 
     # Clean up faker output a bit
-    activity = clean_text(activity, 40).lower()
+    activity = TextMutator.clean_text(activity, 40).lower()
     if not activity:
         activity = "games"
 
@@ -70,7 +71,7 @@ def generate_gameplay_negative(rng):
         ("in this world", 10),
     ]))
 
-    context = clean_text(context, 60)
+    context = TextMutator.clean_text(context, 60)
     if not context:
         context = "for fun"
 
@@ -116,7 +117,7 @@ def generate_gameplay_negative(rng):
             f"{text} ty",
         ])
 
-    return maybe_noisy_line(rng, text, line_p=0.07, p_word=0.06)
+    return TextMutator.maybe_noisy_line(rng, text, line_p=0.07, p_word=0.06)
 
 def install_gameplay_negative(gen):
     gen.add_rule("GAMEPLAY_NEGATIVE", generate_gameplay_negative)

@@ -1,4 +1,5 @@
 from .base import weighted, fake_sentence_safe, maybe_noisy_line
+from text_mutator import TextMutator
 
 HELP_TOPICS = [
     "how to farm",
@@ -78,7 +79,7 @@ def generate_help_social(rng):
     else:
         text = fake_sentence_safe(rng)
 
-    return maybe_noisy_line(rng, text, line_p=0.075, p_word=0.075)
+    return TextMutator.maybe_noisy_line(rng, text, line_p=0.075, p_word=0.075)
 
 def install_help_social(gen):
     gen.add_rule("HELP_SOCIAL", generate_help_social)

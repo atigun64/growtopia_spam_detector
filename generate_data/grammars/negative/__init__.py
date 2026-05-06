@@ -1,4 +1,5 @@
 from .base import install_base_rules, weighted, maybe_style_phrase, clean_text, contains_strong_casino_term
+from text_mutator import TextMutator
 from .world_invites import install_world_invites, generate_world_invite
 from .trade_messages import install_trade_messages, generate_trade_message
 from .owner_info import install_owner_info, generate_owner_info
@@ -25,8 +26,8 @@ def generate_noisy_normal(rng):
     ]))(rng)
 
     # Stronger styling than normal, but still no casino words.
-    text = maybe_style_phrase(rng, base, p_word=0.22)
-    text = clean_text(text)
+    text = TextMutator.maybe_style_phrase(rng, base, p_word=0.22)
+    text = TextMutator.clean_text(text)
 
     if contains_strong_casino_term(text):
         return "hello can someone help"

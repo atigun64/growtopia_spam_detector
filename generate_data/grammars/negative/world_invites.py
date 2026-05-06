@@ -1,4 +1,5 @@
 from .base import safe_world_name, maybe_noisy_line
+from text_mutator import TextMutator
 
 INVITE_VERBS = [
     "go",
@@ -77,7 +78,7 @@ def generate_world_invite(rng):
     if polite:
         text += " " + polite
 
-    return maybe_noisy_line(rng, text, line_p=0.08, p_word=0.08)
+    return TextMutator.maybe_noisy_line(rng, text, line_p=0.08, p_word=0.08)
 
 def install_world_invites(gen):
     gen.add_rule("WORLD_INVITE", generate_world_invite)
