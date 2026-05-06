@@ -1,9 +1,8 @@
 from generators.bid_name_generator import random_bid_combo, random_single_bid
 from helper import weighted
-from generators.name_generator import random_name_generator
 from text_mutator import TextMutator
 
-from generators.user_name_generator import random_user_name
+from generators import random_user_name, random_name_generator
 
 def install_positive_spam_grammar(gen):
     """
@@ -86,7 +85,7 @@ def install_positive_spam_grammar(gen):
         return b
 
     def style_world(rng):
-        w = rng.choice([random_name_generator(rng), world_name_like(rng)])
+        w = rng.choice([random_name_generator(rng), random_name_generator(rng)])
         if rng.random() < 0.18:
             w = TextMutator.random_case(rng, w)
         if rng.random() < 0.06:
@@ -333,7 +332,7 @@ def install_positive_spam_grammar(gen):
         ])
         right = rng.choice([
             style_world(rng),
-            world_name_like(rng),
+            random_name_generator(rng),
             "WORLD" + str(rng.randint(1, 99999)),
         ])
         sep1 = rng.choice(["=", "//", "/", ":", "-", "|"])

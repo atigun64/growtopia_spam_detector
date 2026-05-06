@@ -1,13 +1,12 @@
-from helper import weighted
 from generate_data.generators.name_generator.utils import leetify, mutate_word, random_case
-from generate_data.generators.name_generator.utils import random_cvc_chunk
+from generate_data.generators.name_generator.utils import random_cvc_chunk, weighted_choice
 from generate_data.generators.name_generator.utils import random_digits, random_letters, random_alnum, insert_mid_digits, safe_alnum, safe_lower_alnum
 from generate_data.generators.name_generator.config import ALNUM, ALPHA
 from generate_data.generators.name_generator.config import FAKER
 from generate_data.generators.name_generator.sources import SYLLABLES
 
 def random_syllable_word(rng, syllables=SYLLABLES):
-    syll_count = weighted(rng, [
+    syll_count = weighted_choice(rng, [
         (2, 32),
         (3, 38),
         (4, 20),
@@ -30,7 +29,7 @@ def random_syllable_word(rng, syllables=SYLLABLES):
 
 
 def random_pronounceable_root(rng):
-    mode = weighted(rng, [
+    mode = weighted_choice(rng, [
         ("syllables", 35),
         ("cvc", 14),
         ("mixed", 18),
@@ -86,7 +85,7 @@ def random_mutated_root(rng, base_pool):
 
 
 def random_compact_blob(rng):
-    mode = weighted(rng, [
+    mode = weighted_choice(rng, [
         ("letters_tail", 35),
         ("letters_digits", 25),
         ("split_digits", 20),

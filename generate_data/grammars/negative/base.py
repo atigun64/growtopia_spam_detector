@@ -3,7 +3,7 @@ from generate_data.generators.name_generator import random_name_generator
 from faker import Faker
 import re
 from text_mutator import TextMutator
-from generate_data.generators.user_name_generator import random_user_name
+from generate_data.generators import random_user_name
 
 fake = Faker("en_US")
 

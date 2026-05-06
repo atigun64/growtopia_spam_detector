@@ -6,10 +6,20 @@ from helper import weighted
 from generate_data.generators.user_name_generator import random_user_name
 from generate_data.generators.name_generator import random_name_generator
 
+
+# ----------------------------------------------------------------------
+# Vocab / config
+# ----------------------------------------------------------------------
+
 BASE_BIDS = [
     "BJ", "RM", "QQ", "CSN", "REME", "CASINO",
     "MIN", "GAS", "DL", "WL", "BEJE", "TURK", "BGL",
 ]
+
+
+# ----------------------------------------------------------------------
+# Utility functions
+# ----------------------------------------------------------------------
 
 def mutate_bid(rng, base, t=1.0):
     """
@@ -46,6 +56,11 @@ def mutate_bid(rng, base, t=1.0):
     token = TextMutator.random_case(rng, token)
     return token
 
+
+
+# ----------------------------------------------------------------------
+# Generators
+# ----------------------------------------------------------------------
 
 def random_single_bid(rng, t=1.0):
     base = rng.choice(BASE_BIDS)
