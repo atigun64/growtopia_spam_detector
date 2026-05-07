@@ -78,21 +78,3 @@ def random_strong_casino_bid(rng):
 def generate_extra_filler(rng) -> str:
     extra = rng.choice(FILLER_WORDS)
     return maybe_style(rng, extra, p=0.12, obf_p=0.10, noise_p=0.04, case_p=0.30) if extra else ""
-
-def generate_cta_word(rng) -> str:
-    c = rng.choice(CTA_WORDS)
-    return maybe_style(rng, c, p=0.15, obf_p=0.10, noise_p=0.04, case_p=0.35)
-
-def generate_ad_word(rng) -> str:
-    w = rng.choice(AD_WORDS)
-    return maybe_style(rng, w, p=0.20, obf_p=0.14, noise_p=0.05, case_p=0.40)
-
-def generate_caller_word(rng) -> str:
-    c = rng.choice(CTA_WORDS)
-    if rng.random() < 0.12:
-        c = TextMutator.obfuscate_word(rng, c, p=0.12)
-    if rng.random() < 0.08:
-        c = TextMutator.insert_noise_between_chars(rng, c)
-    if rng.random() < 0.22:
-        c = TextMutator.random_case(rng, c)
-    return c
