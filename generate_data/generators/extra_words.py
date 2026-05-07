@@ -15,32 +15,6 @@ CURRENCY_BIDS = ["DL", "WL", "BGL"]
 NORMAL_MEANING_BIDS = ["RM", "MIN", "GAS", "TURK", "QQ"]
 STRONG_CASINO_BIDS = ["CSN", "CASINO", "BJ", "REME", "BEJE"]
 
-CTA_WORDS = weighted([
-    ("GO", 18),
-    ("JOIN", 16),
-    ("PLAY", 14),
-    ("NOW", 12),
-    ("FAST", 8),
-    ("OPEN", 8),
-    ("FREE", 8),
-    ("GAS", 8),
-    ("BUY", 4),
-    ("SELL", 4),
-    ("WIN", 4),
-    ("BET", 4),
-])
-
-AD_WORDS = weighted([
-    ("CSN", 34),
-    ("CASINO", 24),
-    ("QQ", 12),
-    ("REME", 8),
-    ("BJ", 8),
-    ("DL", 8),
-    ("BGL", 4),
-    ("BET", 2),
-])
-
 FILLER_WORDS = weighted([
     ("", 56),
     ("NOW", 12),
