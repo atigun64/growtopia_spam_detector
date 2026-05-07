@@ -1,6 +1,6 @@
 from helper import weighted
 from text_mutator import TextMutator
-from .common import fake_sentence_safe, install_base_rules, contains_strong_casino_term, safe_user_name, safe_world_name
+from .common import fake_sentence_safe, contains_strong_casino_term, safe_user_name, safe_world_name
 from .scenarios.world_invites import install_world_invites, generate_world_invite
 from .scenarios.trade_messages import install_trade_messages, generate_trade_message
 from .scenarios.owner_info import install_owner_info, generate_owner_info

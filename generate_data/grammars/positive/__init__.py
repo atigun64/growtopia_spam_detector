@@ -1,0 +1,1 @@
+from .install import install_positive_spam_grammar
