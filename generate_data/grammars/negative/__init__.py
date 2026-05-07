@@ -1,5 +1,5 @@
 from helper import weighted
-from .base import install_base_rules, contains_strong_casino_term
+from .base import fake_sentence_safe, install_base_rules, contains_strong_casino_term
 from text_mutator import TextMutator
 from .world_invites import install_world_invites, generate_world_invite
 from .trade_messages import install_trade_messages, generate_trade_message
@@ -23,7 +23,7 @@ def generate_noisy_normal(rng):
         (generate_trade_message, 25),
         (generate_owner_info, 20),
         (generate_help_social, 15),
-        (lambda r: "hello can someone help", 10),  # instead of fake_sentence_safe to avoid import
+        (fake_sentence_safe, 10),
     ]))(rng)
 
     # Stronger styling than normal, but still no casino words.
@@ -31,7 +31,7 @@ def generate_noisy_normal(rng):
     text = TextMutator.clean_text(text)
 
     if contains_strong_casino_term(text):
-        return "hello can someone help"
+        return fake_sentence_safe(rng)
 
     return text
 
