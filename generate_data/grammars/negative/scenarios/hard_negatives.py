@@ -1,5 +1,6 @@
 from text_mutator import TextMutator
-from .base import safe_world_name, safe_user_name, fake_item_name, random_price
+from ..common import safe_world_name, safe_user_name
+from ..domain import fake_item_name, random_price
 from generators import random_currency_bid, random_normal_meaning_bid, random_strong_casino_bid, random_base_bid_token
 from helper import weighted
 

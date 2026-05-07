@@ -1,4 +1,4 @@
-from .base import weighted
+from ..common import weighted
 from text_mutator import TextMutator
 
 URGENT_ACTIONS = [

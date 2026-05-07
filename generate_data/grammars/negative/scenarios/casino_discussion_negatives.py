@@ -1,4 +1,4 @@
-from .base import weighted, safe_user_name, safe_world_name, fake_words_safe
+from ..common import weighted, safe_user_name, safe_world_name, fake_words_safe
 from text_mutator import TextMutator
 
 def casino_word_variant(rng):

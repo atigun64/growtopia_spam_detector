@@ -1,4 +1,4 @@
-from .base import weighted, reseed_fake, safe_world_name, FAKER
+from ..common import weighted, reseed_fake, safe_world_name, FAKER
 from text_mutator import TextMutator
 
 def generate_gameplay_negative(rng):

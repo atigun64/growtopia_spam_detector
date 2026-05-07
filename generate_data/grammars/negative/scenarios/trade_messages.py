@@ -1,4 +1,5 @@
-from .base import safe_world_name, fake_item_name, random_price
+from ..common import safe_world_name
+from ..domain import fake_item_name, random_price
 from text_mutator import TextMutator
 
 TRADE_VERBS = [

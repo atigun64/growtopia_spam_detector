@@ -1,4 +1,4 @@
-from .base import fake_sentence_safe
+from ..common import fake_sentence_safe
 from helper import weighted
 from text_mutator import TextMutator
 
