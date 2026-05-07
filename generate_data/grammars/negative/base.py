@@ -5,24 +5,7 @@ import re
 from text_mutator import TextMutator
 from generate_data.generators import random_user_name
 
-fake = Faker("en_US")
-
-# ------------------------------------------------------------------
-# Important:
-# These are NOT all positive casino bid tokens.
-#
-# This filter is only to prevent accidental label contamination from
-# random Faker/world/user generation.
-#
-# Do NOT put all BASE_BIDS here, because many are valid negatives:
-# WL/DL/BGL = normal currency
-# GAS = gas mask / grass
-# MIN = minimum price
-# TURK = social/nationality context
-# RM = remove
-# QQ = random/social noise
-# ------------------------------------------------------------------
-
+FAKER = Faker("en_US")
 STRONG_CASINO_CONTAMINATION_TERMS = [
     "casino",
     "c4sino",
@@ -33,28 +16,21 @@ STRONG_CASINO_CONTAMINATION_TERMS = [
     "c5n",
 ]
 
-LEET_TABLE = str.maketrans({
-    "0": "o",
-    "1": "i",
-    "3": "e",
-    "4": "a",
-    "5": "s",
-    "7": "t",
-    "@": "a",
-    "$": "s",
-})
+def fake_word_safe(rng):
+    for _ in range(20):
+        reseed_fake(rng, FAKER)
+        w = FAKER.word()
+        w = TextMutator.clean_text(w, 30)
+        if w and not contains_strong_casino_term(w):
+            return w
+    return "item"
 
-def normalize_for_filter(text):
-    """Delegate to TextMutator for consistent normalization."""
-    return TextMutator.normalize_for_filter(text)
+def reseed_fake(rng, FAKER):
+    FAKER.seed_instance(rng.randint(1, 2**32 - 1))
 
 def contains_strong_casino_term(text):
-    compact = normalize_for_filter(text)
+    compact = TextMutator.normalize_for_filter(text)
     return any(term in compact for term in STRONG_CASINO_CONTAMINATION_TERMS)
-
-def clean_text(text, max_len=140):
-    """Delegate to TextMutator for consistent text cleaning."""
-    return TextMutator.clean_text(text, max_len=max_len)
 
 def safe_world_name(rng):
     for _ in range(30):
@@ -70,30 +46,6 @@ def safe_user_name(rng):
             return u
     return "player" + str(rng.randint(1000, 999999))
 
-def maybe_style_word(rng, word, obf_p=0.025, noise_p=0.018, case_p=0.12):
-    """Delegate to TextMutator for consistent styling."""
-    return TextMutator.maybe_style_word(rng, word, obf_p=obf_p, noise_p=noise_p, case_p=case_p)
-
-def maybe_style_phrase(rng, text, p_word=0.06):
-    """Delegate to TextMutator for consistent phrase styling."""
-    return TextMutator.maybe_style_phrase(rng, text, p_word=p_word)
-
-def maybe_noisy_line(rng, text, line_p=0.075, p_word=0.08):
-    """Delegate to TextMutator for consistent line styling."""
-    return TextMutator.maybe_noisy_line(rng, text, line_p=line_p, p_word=p_word)
-
-def reseed_fake(rng):
-    fake.seed_instance(rng.randint(1, 2**32 - 1))
-
-def fake_word_safe(rng):
-    for _ in range(20):
-        reseed_fake(rng)
-        w = fake.word()
-        w = clean_text(w, 30)
-        if w and not contains_strong_casino_term(w):
-            return w
-    return "item"
-
 def fake_words_safe(rng, min_n=1, max_n=3):
     n = rng.randint(min_n, max_n)
     words = []
@@ -102,7 +54,7 @@ def fake_words_safe(rng, min_n=1, max_n=3):
         words.append(fake_word_safe(rng))
 
     text = " ".join(words)
-    return clean_text(text, 60)
+    return TextMutator.clean_text(text, 60)
 
 def fake_sentence_safe(rng):
     """
@@ -110,7 +62,7 @@ def fake_sentence_safe(rng):
     This adds broad linguistic variety.
     """
     for _ in range(20):
-        reseed_fake(rng)
+        reseed_fake(rng, FAKER)
 
         style = rng.choice(weighted([
             ("sentence", 45),
@@ -121,7 +73,7 @@ def fake_sentence_safe(rng):
         ]))
 
         if style == "sentence":
-            text = fake.sentence(nb_words=rng.randint(3, 11)).rstrip(".")
+            text = FAKER.sentence(nb_words=rng.randint(3, 11)).rstrip(".")
         elif style == "question":
             topic = fake_words_safe(rng, 1, 3)
             text = rng.choice([
@@ -136,9 +88,9 @@ def fake_sentence_safe(rng):
                 f"where is the white door",
             ])
         elif style == "catch":
-            text = fake.catch_phrase()
+            text = FAKER.catch_phrase()
         elif style == "bs":
-            text = fake.bs()
+            text = FAKER.bs()
         else:
             text = rng.choice([
                 "hi",
@@ -160,10 +112,10 @@ def fake_sentence_safe(rng):
                 "owner here",
             ])
 
-        text = clean_text(text)
+        text = TextMutator.clean_text(text)
 
         if text and not contains_strong_casino_term(text):
-            return maybe_noisy_line(rng, text, line_p=0.06, p_word=0.06)
+            return TextMutator.maybe_noisy_line(rng, text, line_p=0.06, p_word=0.06)
 
     return "hello can someone help"
 
@@ -269,8 +221,7 @@ def fake_item_name(rng):
     if mode == "plain":
         item = root
     elif mode == "color":
-        reseed_fake(rng)
-        item = fake.color_name().lower() + " " + root
+        item = FAKER.color_name().lower() + " " + root
     elif mode == "fake_prefix":
         item = fake_word_safe(rng) + " " + root
     elif mode == "fake_two_prefix":
@@ -291,12 +242,14 @@ def fake_item_name(rng):
             "private",
         ]) + " " + root
 
-    item = clean_text(item, 80)
+    item = TextMutator.clean_text(item, 80)
 
     if contains_strong_casino_term(item):
         return root
 
     return item
+
+
 
 def install_base_rules(gen):
     gen.add_rule("WORLD_NAME", safe_world_name)

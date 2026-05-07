@@ -1,4 +1,4 @@
-from .base import weighted, reseed_fake, safe_world_name, fake
+from .base import weighted, reseed_fake, safe_world_name, FAKER
 from text_mutator import TextMutator
 
 def generate_gameplay_negative(rng):
@@ -18,9 +18,9 @@ def generate_gameplay_negative(rng):
 
     # Faker-driven normal activities, then mix with GT-like words.
     activity = rng.choice(weighted([
-        (fake.word(), 18),
-        (fake.catch_phrase(), 10),
-        (fake.bs(), 8),
+        (FAKER.word(), 18),
+        (FAKER.catch_phrase(), 10),
+        (FAKER.bs(), 8),
         ("games", 12),
         ("minigames", 12),
         ("parkour", 10),
@@ -56,9 +56,9 @@ def generate_gameplay_negative(rng):
 
     # Context from faker plus normal chat phrases
     context = rng.choice(weighted([
-        (fake.sentence(nb_words=rng.randint(3, 7)).rstrip("."), 12),
-        (fake.catch_phrase(), 8),
-        (fake.bs(), 6),
+        (FAKER.sentence(nb_words=rng.randint(3, 7)).rstrip("."), 12),
+        (FAKER.catch_phrase(), 8),
+        (FAKER.bs(), 6),
         ("for fun", 15),
         ("with friends", 15),
         ("right now", 10),

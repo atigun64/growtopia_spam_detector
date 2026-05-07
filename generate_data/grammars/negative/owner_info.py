@@ -1,4 +1,4 @@
-from .base import safe_user_name, safe_world_name, maybe_noisy_line
+from .base import safe_user_name, safe_world_name
 from text_mutator import TextMutator
 
 OWNER_ROLES = [

@@ -1,4 +1,5 @@
-from .base import install_base_rules, weighted, maybe_style_phrase, clean_text, contains_strong_casino_term
+from helper import weighted
+from .base import install_base_rules, contains_strong_casino_term
 from text_mutator import TextMutator
 from .world_invites import install_world_invites, generate_world_invite
 from .trade_messages import install_trade_messages, generate_trade_message

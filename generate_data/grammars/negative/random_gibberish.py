@@ -1,4 +1,4 @@
-from .base import weighted, maybe_noisy_line
+from helper import weighted
 from text_mutator import TextMutator
 
 QWERTY_CHARS = "qwertyuiopasdfghjklzxcvbnm"

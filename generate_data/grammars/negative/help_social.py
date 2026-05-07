@@ -1,4 +1,5 @@
-from .base import weighted, fake_sentence_safe, maybe_noisy_line
+from .base import fake_sentence_safe
+from helper import weighted
 from text_mutator import TextMutator
 
 HELP_TOPICS = [
