@@ -12,7 +12,7 @@ def generate_gameplay_negative(rng):
     - join us for minigames
     - testing a maze in world52
     """
-    reseed_fake(rng)
+    reseed_fake(rng, FAKER)
 
     world = safe_world_name(rng)
 
