@@ -2,6 +2,8 @@
 
 A machine learning-based spam detector for Growtopia (a multiplayer sandbox game) that distinguishes between **casino/gambling advertisements** and **legitimate player chat**.
 
+**You can test the latest version of model here:** https://huggingface.co/spaces/atigun/gt_spam_bot
+
 ## Overview
 
 This project detects casino-related spam messages in Growtopia chat, which often disguise gambling advertisements using:
