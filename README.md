@@ -16,7 +16,7 @@ Legitimate messages (world invites, trades, gameplay chat) are unaffected.
 ```
 growtopia_spam_detector/
 ├── app.py                          # Gradio web interface for the detector
-├── main.py                         # Demo script with normalization examples
+├── main.py                         # Demo script / quick test entrypoint
 ├── normalization.py                # Text normalization utilities
 ├── spam_model.joblib               # Trained ML model
 ├── requirements.txt                # Dependencies
@@ -24,27 +24,43 @@ growtopia_spam_detector/
 │   ├── train.csv
 │   ├── val.csv
 │   └── test.csv
-└── generate_data/                  # Synthetic data generation
-    ├── main.py                     # Grammar generation demo
-    ├── make_dataset.py             # Generate train/val/test splits
-    ├── generator.py                # Grammar engine
-    ├── helper.py                   # Text manipulation utilities
-    ├── bid_name_generator.py       # Casino token generation (spam)
-    ├── world_name_generator.py     # World name generation
-    └── grammars/
-        ├── positive.py             # Spam message patterns
-        └── negative/               # Benign message patterns (modularized)
+└── generate_data/                  # Synthetic data generation package
+    ├── grammar.py                 # Grammar engine / public grammar API
+    ├── helper.py                  # Shared helper utilities
+    ├── main.py                    # Grammar generation demo
+    ├── make_dataset.py            # Generate train/val/test splits
+    ├── text_mutator.py            # Text styling / obfuscation helpers
+    ├── generators/                # Name and token generators
+    │   ├── __init__.py
+    │   ├── bid_name_generator.py
+    │   ├── extra_words.py
+    │   ├── gt_item_name_gen.py
+    │   ├── user_name_generator.py
+    │   └── name_generator/       # Modular name generator package
+    │       ├── __init__.py
+    │       ├── config.py
+    │       ├── generators.py
+    │       ├── sources.py
+    │       └── utils.py
+    └── grammars/                 # Grammar definitions
+        ├── positive/             # Positive / spam examples
+        │   ├── __init__.py
+        │   └── install.py
+        └── negative/             # Benign / negative examples
             ├── __init__.py
-            ├── base.py             # Shared utilities & constants
-            ├── world_invites.py    # "come join my world"
-            ├── trade_messages.py   # "buying/selling items"
-            ├── owner_info.py       # "owner is USERNAME"
-            ├── help_social.py      # "how do I farm?"
-            ├── hard_negatives.py   # Edge cases with benign use of casino terms
-            ├── casino_discussion_negatives.py  # "stop spamming CSN"
-            ├── aggressive_intent.py            # "go go go!!"
-            ├── random_gibberish.py            # "asdfghjkl"
-            └── gameplay_negative.py           # Normal gameplay chat
+            ├── common.py         # Shared negative grammar pieces
+            ├── domain.py         # Domain-specific negative grammar pieces
+            ├── install.py        # Main installer for negative grammar
+            └── scenarios/        # Modular negative scenarios
+                ├── aggressive_intent.py
+                ├── casino_discussion_negatives.py
+                ├── gameplay_negative.py
+                ├── hard_negatives.py
+                ├── help_social.py
+                ├── owner_info.py
+                ├── random_gibberish.py
+                ├── trade_messages.py
+                └── world_invites.py
 ```
 
 ## Installation
