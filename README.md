@@ -10,6 +10,7 @@ This project detects casino-related spam messages in Growtopia chat, which often
 - **Direct tokens**: `CSN`, `CASINO`, `BJ`, `REME`, `BEJE`
 - **Obfuscated forms**: `C$N`, `C4S1N0`, `C-S-N`, `CSN//WORLD52`
 - **Separators**: `=`, `/`, `:`, `-` used to structure ads like `CSN=WORLD52`
+- **Action-style prefixes**: many spam bots prefix ads with `/me`, for example `/me CSN=RUDOF12` or `/me CSN=WORLD52`
 
 ![Spammers In Game](spammers.png)
 
@@ -132,6 +133,7 @@ C-A-S-I-N-O/WORLD52       c-a-s-i-n-o/world52    0.9910 🚨 SPAM
 REME//TEROYAM213          reme//teroyam213        0.9966 🚨 SPAM
 BJ=WORLD99                bj world99              0.9920 🚨 SPAM
 /me CSN=CASINO123         csn casino123           1.0000 🚨 SPAM
+/me GGo=RUDOLF2           GGo rudolf12            1.0000 🚨 SPAM
 ```
 
 **Key patterns detected:**
@@ -139,6 +141,7 @@ BJ=WORLD99                bj world99              0.9920 🚨 SPAM
 - Separator patterns (`=`, `//`, `-`, `:`)
 - World identifier following the token
 - Obfuscated forms (leet-speak: `C$N`, `C4S1N0`, etc.)
+- `/me` action-prefix spam, which is commonly used by bots before posting ad text
 
 ### Benign Messages (Pass Through)
 
@@ -207,6 +210,8 @@ The generator uses two modular grammar systems:
    - Binary classifier: Spam (1) vs. Benign (0)
    - Outputs probability [0, 1]
    - Threshold: 0.5 (≥0.5 = spam)
+   - The model also learns that `/me` is a strong spam indicator when followed by casino-style tokens or world codes.
+
 
 ## Files Reference
 
