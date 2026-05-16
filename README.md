@@ -11,6 +11,8 @@ This project detects casino-related spam messages in Growtopia chat, which often
 - **Obfuscated forms**: `C$N`, `C4S1N0`, `C-S-N`, `CSN//WORLD52`
 - **Separators**: `=`, `/`, `:`, `-` used to structure ads like `CSN=WORLD52`
 
+![Spammers In Game](spammers.png)
+
 Legitimate messages (world invites, trades, gameplay chat) are unaffected.
 
 ## Project Structure
